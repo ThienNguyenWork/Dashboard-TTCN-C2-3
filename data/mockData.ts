@@ -10,19 +10,19 @@ export const teachers: Teacher[] = [
 ];
 
 export const classes: SchoolClass[] = [
-  { id: '5a1', name: 'Lớp 5A1', teacherId: 'gv01', grade: 5 },
-  { id: '5a2', name: 'Lớp 5A2', teacherId: 'gv02', grade: 5 },
-  { id: '5a3', name: 'Lớp 5A3', teacherId: 'gv03', grade: 5 },
-  { id: '5a4', name: 'Lớp 5A4', teacherId: 'gv04', grade: 5 },
-  { id: '5a5', name: 'Lớp 5A5', teacherId: 'gv05', grade: 5 },
-  { id: '5a6', name: 'Lớp 5A6', teacherId: 'gv01', grade: 5 },
-  { id: '5a7', name: 'Lớp 5A7', teacherId: 'gv02', grade: 5 },
-  { id: '5a8', name: 'Lớp 5A8', teacherId: 'gv03', grade: 5 },
-  { id: '5a9', name: 'Lớp 5A9', teacherId: 'gv04', grade: 5 },
-  { id: '5a10', name: 'Lớp 5A10', teacherId: 'gv05', grade: 5 },
+  { id: '6a1', name: 'Lớp 6A1', teacherId: 'gv01', grade: 6 },
+  { id: '7a1', name: 'Lớp 7A1', teacherId: 'gv02', grade: 7 },
+  { id: '8a1', name: 'Lớp 8A1', teacherId: 'gv03', grade: 8 },
+  { id: '9a1', name: 'Lớp 9A1', teacherId: 'gv04', grade: 9 },
+  { id: '6a2', name: 'Lớp 6A2', teacherId: 'gv05', grade: 6 },
+  { id: '7a2', name: 'Lớp 7A2', teacherId: 'gv01', grade: 7 },
+  { id: '8a2', name: 'Lớp 8A2', teacherId: 'gv02', grade: 8 },
+  { id: '9a2', name: 'Lớp 9A2', teacherId: 'gv03', grade: 9 },
+  { id: '6a3', name: 'Lớp 6A3', teacherId: 'gv04', grade: 6 },
+  { id: '7a3', name: 'Lớp 7A3', teacherId: 'gv05', grade: 7 },
 ];
 
-const subjects = ['Tiếng Việt', 'Toán', 'Ngoại ngữ 1', 'Đạo đức', 'Tự nhiên và Xã hội', 'Lịch sử và Địa lí', 'Khoa học', 'Tin học', 'Công nghệ', 'Âm nhạc', 'Mĩ thuật', 'Giáo dục thể chất'];
+const subjects = ['Tiếng Anh'];
 
 const determineOverallAssessment = (assessments: StudentAssessment[], period: ReportingPeriod): Student['overallAssessment'] => {
     const hasUnfinished = assessments.some(a => a.level === 'Chưa hoàn thành');
@@ -81,10 +81,7 @@ export const generateMockData = (period: ReportingPeriod) => {
 
     const students: Student[] = baseStudents.map(baseStudent => {
         const studentClass = classes.find(c => c.id === baseStudent.classId)!;
-        let studentSubjects = subjects.filter(s => {
-            // Grade 5 has all subjects
-            return true;
-        });
+        let studentSubjects = subjects;
 
         const assessments = studentSubjects.map(subject => {
             const rand = Math.random();
@@ -94,7 +91,7 @@ export const generateMockData = (period: ReportingPeriod) => {
             else level = 'Chưa hoàn thành';
 
             let score: number | undefined = undefined;
-            if (hasPeriodicTest && ['Toán', 'Tiếng Việt', 'Ngoại ngữ 1'].includes(subject)) {
+            if (hasPeriodicTest && subject === 'Tiếng Anh') {
                  score = 5 + Math.floor(Math.random() * 6); // Score from 5-10
             }
 
@@ -102,18 +99,18 @@ export const generateMockData = (period: ReportingPeriod) => {
         });
 
         // Force some specific issues for demonstration
-        // Make 'Toán' the subject with the most 'Chưa hoàn thành'
-        const toanIndex = assessments.findIndex(a => a.subject === 'Toán');
-        if (toanIndex !== -1 && baseStudent.id % 7 < 1) { // ~14% of students
-             assessments[toanIndex].level = 'Chưa hoàn thành';
+        // Make 'Tiếng Anh' the subject with the most 'Chưa hoàn thành'
+        const englishIndex = assessments.findIndex(a => a.subject === 'Tiếng Anh');
+        if (englishIndex !== -1 && baseStudent.id % 7 < 1) { // ~14% of students
+             assessments[englishIndex].level = 'Chưa hoàn thành';
         }
         
-        // Make class '5A2' the class with the most students needing help
-        if (studentClass.id === '5a2' && baseStudent.id % 4 === 0) { // 25% of students in this class
-            const randomSubjectIndex = Math.floor(Math.random() * 3); // TV, Toán, NN1
+        // Make class '6a1' the class with the most students needing help
+        if (studentClass.id === '6a1' && baseStudent.id % 4 === 0) { // 25% of students in this class
+            const randomSubjectIndex = 0; // Tiếng Anh
             assessments[randomSubjectIndex].level = 'Chưa hoàn thành';
         }
-        
+
         const overallAssessment = determineOverallAssessment(assessments, period);
 
         return {

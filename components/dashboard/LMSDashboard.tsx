@@ -132,25 +132,25 @@ interface WarningState {
 // --- HELPER ---
 const getGradeLabel = (grade: number) => {
     const gradeMap: { [key: number]: string } = {
-        5: 'Lớp 5A1',
-        6: 'Lớp 5A2',
-        7: 'Lớp 5A3',
-        8: 'Lớp 5A4',
-        9: 'Lớp 5A5',
-        10: 'Lớp 5A6',
-        11: 'Lớp 5A7',
-        12: 'Lớp 5A8',
-        13: 'Lớp 5A9',
-        14: 'Lớp 5A10',
+        6: 'Lớp 6A1',
+        7: 'Lớp 7A1',
+        8: 'Lớp 8A1',
+        9: 'Lớp 9A1',
+        10: 'Lớp 6A2',
+        11: 'Lớp 7A2',
+        12: 'Lớp 8A2',
+        13: 'Lớp 9A2',
+        14: 'Lớp 6A3',
+        15: 'Lớp 7A3',
     };
     return gradeMap[grade] || `Khối ${grade}`;
 };
 
 // --- MOCK DATA GENERATION ---
-const SUBJECTS = ['Toán', 'Ngữ Văn', 'Tiếng Anh', 'KHTN', 'Lịch sử & Địa lí', 'GDCD', 'Công nghệ', 'Tin học'];
-const CLASS_IDS = ['5a1', '5a2', '5a3', '5a4', '5a5', '5a6', '5a7', '5a8', '5a9', '5a10'];
-const CLASS_NAMES_LIST = ['5A1', '5A2', '5A3', '5A4', '5A5', '5A6', '5A7', '5A8', '5A9', '5A10'];
-const GRADES = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+const SUBJECTS = ['Tiếng Anh'];
+const CLASS_IDS = ['6a1', '7a1', '8a1', '9a1', '6a2', '7a2', '8a2', '9a2', '6a3', '7a3'];
+const CLASS_NAMES_LIST = ['6A1', '7A1', '8A1', '9A1', '6A2', '7A2', '8A2', '9A2', '6A3', '7A3'];
+const GRADES = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 const CLASS_NAMES = ['A1'];
 
 const generateLMSData = () => {
@@ -166,7 +166,7 @@ const generateLMSData = () => {
         classes.push({
             id: classId,
             name: `Lớp ${CLASS_NAMES_LIST[index]}`,
-            grade: 5,
+            grade: GRADES[index],
             assignedMaterials: assignedMat,
             completedMaterials: compMat,
             assignedTests: assignedTest,
@@ -261,7 +261,7 @@ const generateLMSData = () => {
         const firstName = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)];
         const fullName = `${lastName} ${middleName} ${firstName}`;
         
-        // Randomly select a class from our 10 classes (5A1-5A10)
+        // Randomly select a class from our 10 classes (6A1-7A3)
         const randomClassIndex = Math.floor(Math.random() * CLASS_IDS.length);
         const classId = CLASS_IDS[randomClassIndex];
         const className = CLASS_NAMES_LIST[randomClassIndex];
@@ -275,7 +275,7 @@ const generateLMSData = () => {
             id: `HS${i}`,
             name: fullName,
             className: `Lớp ${className}`,
-            grade: 5,
+            grade: GRADES[randomClassIndex],
             completedMaterials,
             completedTests,
             averageTestScore: parseFloat(avgScore.toFixed(1))
@@ -738,7 +738,7 @@ export const LMSDashboard: React.FC = () => {
         };
 
         // Distribution weights tailored to look realistic
-        const isHardSubject = ['Toán', 'Tiếng Anh', 'KHTN'].includes(spectrumSubject);
+        const isHardSubject = spectrumSubject === 'Tiếng Anh';
         
         const totalStudents = 300 + Math.floor(pseudoRandom() * 50);
         
@@ -2408,7 +2408,7 @@ export const LMSDashboard: React.FC = () => {
                                 >
                                     Tất cả
                                 </button>
-                                {[5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(grade => (
+                                {[6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(grade => (
                                     <button 
                                         key={grade}
                                         onClick={() => setSelectedStudentGrade(grade)}
