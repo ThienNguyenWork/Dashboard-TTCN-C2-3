@@ -11,15 +11,17 @@ export const teachers: Teacher[] = [
 
 export const classes: SchoolClass[] = [
   { id: '6a1', name: 'Lớp 6A1', teacherId: 'gv01', grade: 6 },
-  { id: '7a1', name: 'Lớp 7A1', teacherId: 'gv02', grade: 7 },
-  { id: '8a1', name: 'Lớp 8A1', teacherId: 'gv03', grade: 8 },
-  { id: '9a1', name: 'Lớp 9A1', teacherId: 'gv04', grade: 9 },
-  { id: '6a2', name: 'Lớp 6A2', teacherId: 'gv05', grade: 6 },
-  { id: '7a2', name: 'Lớp 7A2', teacherId: 'gv01', grade: 7 },
-  { id: '8a2', name: 'Lớp 8A2', teacherId: 'gv02', grade: 8 },
-  { id: '9a2', name: 'Lớp 9A2', teacherId: 'gv03', grade: 9 },
-  { id: '6a3', name: 'Lớp 6A3', teacherId: 'gv04', grade: 6 },
-  { id: '7a3', name: 'Lớp 7A3', teacherId: 'gv05', grade: 7 },
+  { id: '6a2', name: 'Lớp 6A2', teacherId: 'gv02', grade: 6 },
+  { id: '6a3', name: 'Lớp 6A3', teacherId: 'gv03', grade: 6 },
+  { id: '7a1', name: 'Lớp 7A1', teacherId: 'gv04', grade: 7 },
+  { id: '7a2', name: 'Lớp 7A2', teacherId: 'gv05', grade: 7 },
+  { id: '7a3', name: 'Lớp 7A3', teacherId: 'gv01', grade: 7 },
+  { id: '8a1', name: 'Lớp 8A1', teacherId: 'gv02', grade: 8 },
+  { id: '8a2', name: 'Lớp 8A2', teacherId: 'gv03', grade: 8 },
+  { id: '8a3', name: 'Lớp 8A3', teacherId: 'gv04', grade: 8 },
+  { id: '9a1', name: 'Lớp 9A1', teacherId: 'gv05', grade: 9 },
+  { id: '9a2', name: 'Lớp 9A2', teacherId: 'gv01', grade: 9 },
+  { id: '9a3', name: 'Lớp 9A3', teacherId: 'gv02', grade: 9 },
 ];
 
 const subjects = ['Tiếng Anh'];

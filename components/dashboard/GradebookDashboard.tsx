@@ -32,7 +32,7 @@ export const GradebookDashboard: React.FC = () => {
   };
 
   return (
-    <div className="animate-fade-in space-y-6">
+    <div className="animate-fade-in space-y-6 px-6 pb-6">
         <PeriodTabs activePeriod={activePeriod} setActivePeriod={setActivePeriod} />
         <OverallStats students={students} classes={classes} period={activePeriod} onCardClick={handleCardClick} />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

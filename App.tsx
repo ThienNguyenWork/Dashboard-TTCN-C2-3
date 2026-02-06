@@ -7,8 +7,10 @@ const App: React.FC = () => {
     <div className="flex h-screen flex-col bg-gray-100 dark:bg-gray-800 font-sans">
       <Header title="LMS - Bảng điều khiển Tổ trưởng chuyên môn" />
       
-      <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900">
-        <LMSDashboard />
+      <main className="flex-1 overflow-hidden bg-gray-100 dark:bg-gray-900">
+        <div className="h-full overflow-y-auto overflow-x-hidden">
+          <LMSDashboard />
+        </div>
       </main>
     </div>
   );

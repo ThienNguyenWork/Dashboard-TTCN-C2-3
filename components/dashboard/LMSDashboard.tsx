@@ -133,24 +133,26 @@ interface WarningState {
 const getGradeLabel = (grade: number) => {
     const gradeMap: { [key: number]: string } = {
         6: 'Lớp 6A1',
-        7: 'Lớp 7A1',
-        8: 'Lớp 8A1',
-        9: 'Lớp 9A1',
-        10: 'Lớp 6A2',
-        11: 'Lớp 7A2',
-        12: 'Lớp 8A2',
-        13: 'Lớp 9A2',
-        14: 'Lớp 6A3',
-        15: 'Lớp 7A3',
+        7: 'Lớp 6A2',
+        8: 'Lớp 6A3',
+        9: 'Lớp 7A1',
+        10: 'Lớp 7A2',
+        11: 'Lớp 7A3',
+        12: 'Lớp 8A1',
+        13: 'Lớp 8A2',
+        14: 'Lớp 8A3',
+        15: 'Lớp 9A1',
+        16: 'Lớp 9A2',
+        17: 'Lớp 9A3',
     };
     return gradeMap[grade] || `Khối ${grade}`;
 };
 
 // --- MOCK DATA GENERATION ---
 const SUBJECTS = ['Tiếng Anh'];
-const CLASS_IDS = ['6a1', '7a1', '8a1', '9a1', '6a2', '7a2', '8a2', '9a2', '6a3', '7a3'];
-const CLASS_NAMES_LIST = ['6A1', '7A1', '8A1', '9A1', '6A2', '7A2', '8A2', '9A2', '6A3', '7A3'];
-const GRADES = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+const CLASS_IDS = ['6a1', '6a2', '6a3', '7a1', '7a2', '7a3', '8a1', '8a2', '8a3', '9a1', '9a2', '9a3'];
+const CLASS_NAMES_LIST = ['6A1', '6A2', '6A3', '7A1', '7A2', '7A3', '8A1', '8A2', '8A3', '9A1', '9A2', '9A3'];
+const GRADES = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 const CLASS_NAMES = ['A1'];
 
 const generateLMSData = () => {
@@ -675,7 +677,7 @@ export const LMSDashboard: React.FC = () => {
     const [teacherTestCriteria, setTeacherTestCriteria] = useState<LeaderboardCriteria>('rate');
 
     // Student Stats State
-    const [selectedStudentGrade, setSelectedStudentGrade] = useState<number | 'all'>('all');
+    const [selectedStudentGrade, setSelectedStudentGrade] = useState<string>('all');
     const [showAllStudents, setShowAllStudents] = useState(false);
 
     // Show All States for Subject Tabs
@@ -914,10 +916,10 @@ export const LMSDashboard: React.FC = () => {
         const fileName = "Thong_ke_Hoc_sinh.xlsx";
         
         const getData = () => {
-             // Filter based on selected grade
-             const filteredStudents = selectedStudentGrade === 'all' 
-                ? students 
-                : students.filter(s => s.grade === selectedStudentGrade);
+             // Filter based on selected class
+             const filteredStudents = selectedStudentGrade === 'all'
+                ? students
+                : students.filter(s => s.className === `Lớp ${selectedStudentGrade}`);
 
              return [...filteredStudents].sort((a, b) => {
                  // Always sort by Score
@@ -1171,7 +1173,7 @@ export const LMSDashboard: React.FC = () => {
                             onChange={(e) => setSpectrumGrade(Number(e.target.value))}
                             className="w-full appearance-none bg-slate-100 dark:bg-gray-700 border-2 border-slate-200 dark:border-gray-600 text-slate-800 dark:text-white py-3 pl-4 pr-10 rounded-xl text-lg font-bold focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer"
                         >
-                            {[5,6,7,8,9,10,11,12,13,14].map(g => (
+                            {[6,7,8,9,10,11,12,13,14].map(g => (
                                 <option key={g} value={g}>{getGradeLabel(g)}</option>
                             ))}
                         </select>
@@ -1456,39 +1458,39 @@ export const LMSDashboard: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="h-72 w-full relative pl-12 pb-8 overflow-x-auto custom-scrollbar">
-                        <div className="min-w-full">
-                        {/* Grid Lines */}
-                        <div className="absolute inset-0 left-12 bottom-8 flex flex-col justify-between pointer-events-none pr-4">
-                            {[1, 0.75, 0.5, 0.25, 0].map((ratio) => (
-                                <div key={ratio} className="border-b border-dashed border-gray-200 dark:border-gray-700 w-full h-0 relative">
-                                    <span className="absolute -top-3 -left-12 text-sm text-gray-500 dark:text-gray-400 w-10 text-right font-medium">{Math.round(yAxisMaxMat * ratio)}</span>
-                                </div>
-                            ))}
-                        </div>
-                        {/* Bars */}
-                        <div className="absolute inset-0 left-12 bottom-8 flex items-end justify-around gap-2 sm:gap-8 px-2 sm:px-8">
-                            {materialChartData.map((data) => {
-                                const totalHeightPct = (data.total / yAxisMaxMat) * 100;
-                                const unfinishedPct = data.total > 0 ? (data.unfinished / data.total) * 100 : 0;
-                                const completedPct = data.total > 0 ? (data.compMat / data.total) * 100 : 0;
-
-                                return (
-                                    <div key={data.className} className="flex flex-col items-center flex-1 h-full justify-end group z-10 relative">
-                                        <div className="mb-1 text-base font-bold text-slate-700 dark:text-slate-200 transition-all duration-300 group-hover:-translate-y-1 whitespace-nowrap">{data.total.toLocaleString()}</div>
-                                        <div style={{ height: `${totalHeightPct}%` }} className="w-full max-w-[70px] flex flex-col relative rounded-t-lg overflow-hidden shadow-sm">
-                                            <div style={{ height: `${unfinishedPct}%` }} className="w-full bg-slate-300 dark:bg-slate-600 transition-all duration-500 relative group/seg flex items-center justify-center cursor-pointer hover:opacity-90">
-                                                <span className="text-slate-800 dark:text-slate-200 font-bold text-sm opacity-0 group-hover/seg:opacity-100 transition-opacity select-none drop-shadow-sm">{data.unfinished}</span>
-                                            </div>
-                                            <div style={{ height: `${completedPct}%` }} className="w-full bg-orange-500 transition-all duration-500 relative group/seg flex items-center justify-center cursor-pointer hover:opacity-90">
-                                                <span className="text-white font-bold text-sm opacity-0 group-hover/seg:opacity-100 transition-opacity select-none drop-shadow-md">{data.compMat}</span>
-                                            </div>
-                                        </div>
-                                        <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 font-bold text-slate-700 dark:text-gray-300 text-base whitespace-nowrap pt-2">Lớp {data.className}</span>
+                    <div className="overflow-x-auto custom-scrollbar">
+                        <div className="h-72 min-w-max relative pl-12 pb-8">
+                            {/* Grid Lines */}
+                            <div className="absolute inset-0 left-12 bottom-8 flex flex-col justify-between pointer-events-none pr-4">
+                                {[1, 0.75, 0.5, 0.25, 0].map((ratio) => (
+                                    <div key={ratio} className="border-b border-dashed border-gray-200 dark:border-gray-700 w-full h-0 relative">
+                                        <span className="absolute -top-3 -left-12 text-sm text-gray-500 dark:text-gray-400 w-10 text-right font-medium">{Math.round(yAxisMaxMat * ratio)}</span>
                                     </div>
-                                );
-                            })}
-                        </div>
+                                ))}
+                            </div>
+                            {/* Bars */}
+                            <div className="absolute inset-0 left-12 bottom-8 flex items-end justify-around gap-2 sm:gap-8 px-2 sm:px-8">
+                                {materialChartData.map((data) => {
+                                    const totalHeightPct = (data.total / yAxisMaxMat) * 100;
+                                    const unfinishedPct = data.total > 0 ? (data.unfinished / data.total) * 100 : 0;
+                                    const completedPct = data.total > 0 ? (data.compMat / data.total) * 100 : 0;
+
+                                    return (
+                                        <div key={data.className} className="flex flex-col items-center flex-1 h-full justify-end group z-10 relative min-w-[100px]">
+                                            <div className="mb-1 text-base font-bold text-slate-700 dark:text-slate-200 transition-all duration-300 group-hover:-translate-y-1 whitespace-nowrap">{data.total.toLocaleString()}</div>
+                                            <div style={{ height: `${totalHeightPct}%` }} className="w-full max-w-[70px] flex flex-col relative rounded-t-lg overflow-hidden shadow-sm">
+                                                <div style={{ height: `${unfinishedPct}%` }} className="w-full bg-slate-300 dark:bg-slate-600 transition-all duration-500 relative group/seg flex items-center justify-center cursor-pointer hover:opacity-90">
+                                                    <span className="text-slate-800 dark:text-slate-200 font-bold text-sm opacity-0 group-hover/seg:opacity-100 transition-opacity select-none drop-shadow-sm">{data.unfinished}</span>
+                                                </div>
+                                                <div style={{ height: `${completedPct}%` }} className="w-full bg-orange-500 transition-all duration-500 relative group/seg flex items-center justify-center cursor-pointer hover:opacity-90">
+                                                    <span className="text-white font-bold text-sm opacity-0 group-hover/seg:opacity-100 transition-opacity select-none drop-shadow-md">{data.compMat}</span>
+                                                </div>
+                                            </div>
+                                            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 font-bold text-slate-700 dark:text-gray-300 text-base whitespace-nowrap pt-2">Lớp {data.className}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1511,8 +1513,8 @@ export const LMSDashboard: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="h-72 w-full relative pl-8 pb-8 overflow-x-auto custom-scrollbar">
-                            <div className="min-w-full">
+                        <div className="overflow-x-auto custom-scrollbar">
+                            <div className="h-72 min-w-max relative pl-8 pb-8">
                             {/* Grid Lines */}
                             <div className="absolute inset-0 left-8 bottom-8 flex flex-col justify-between pointer-events-none pr-2">
                                 {[1, 0.5, 0].map((ratio) => (
@@ -1529,7 +1531,7 @@ export const LMSDashboard: React.FC = () => {
                                     const completedPct = data.assignedTest > 0 ? (data.completedTest / data.assignedTest) * 100 : 0;
 
                                     return (
-                                        <div key={data.grade} className="flex flex-col items-center flex-1 h-full justify-end group z-10 relative">
+                                        <div key={data.grade} className="flex flex-col items-center flex-1 h-full justify-end group z-10 relative min-w-[100px]">
                                             <div className="mb-1 text-base font-bold text-slate-700 dark:text-slate-200">{data.assignedTest}</div>
                                             <div style={{ height: `${totalHeightPct}%` }} className="w-full max-w-[60px] flex flex-col relative rounded-t-lg overflow-hidden shadow-sm">
                                                 <div style={{ height: `${unfinishedPct}%` }} className="w-full bg-slate-300 dark:bg-slate-600 transition-all duration-500 relative group/seg flex items-center justify-center cursor-pointer hover:opacity-90">
@@ -1564,8 +1566,8 @@ export const LMSDashboard: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="h-72 w-full relative pl-8 pb-20 overflow-x-auto custom-scrollbar">
-                            <div className="min-w-full">
+                        <div className="overflow-x-auto custom-scrollbar">
+                            <div className="h-72 min-w-max relative pl-8 pb-20">
                              {/* Grid Lines */}
                             <div className="absolute inset-0 left-8 bottom-8 flex flex-col justify-between pointer-events-none pr-2">
                                 {[1, 0.75, 0.5, 0.25, 0].map((ratio) => (
@@ -1598,7 +1600,7 @@ export const LMSDashboard: React.FC = () => {
                                     const visualWeakHeight = totalCompletedPct > 0 ? (weakPctAssigned / totalCompletedPct) * 100 : 0;
 
                                     return (
-                                        <div key={data.grade} className={`flex flex-col items-center flex-1 h-full justify-end group z-10 relative rounded-xl transition-colors duration-300 ${isWarning ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
+                                        <div key={data.grade} className={`flex flex-col items-center flex-1 h-full justify-end group z-10 relative rounded-xl transition-colors duration-300 min-w-[100px] ${isWarning ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
                                             
                                             <div className="mb-1 text-base font-bold text-slate-700 dark:text-slate-200">{Math.round(totalCompletedPct)}%</div>
                                             
@@ -2294,7 +2296,7 @@ export const LMSDashboard: React.FC = () => {
     const renderStudentStats = () => {
         // Sort students only by Score as requested
         const sortedStudents = [...students].filter(s => 
-            selectedStudentGrade === 'all' || s.grade === selectedStudentGrade
+            selectedStudentGrade === 'all' || s.className === `Lớp ${selectedStudentGrade}`
         ).sort((a, b) => b.averageTestScore - a.averageTestScore);
 
         const top3 = sortedStudents.slice(0, 3);
@@ -2334,7 +2336,7 @@ export const LMSDashboard: React.FC = () => {
 
             return (
                 <div key={student.id} className={`
-                    grid grid-cols-12 gap-4 p-5 items-center rounded-xl border-2 transition-all mb-4
+                    grid grid-cols-12 gap-4 p-5 items-center rounded-xl border-2 transition-all mb-4 min-w-max
                     ${rowStyle}
                 `}>
                     <div className="col-span-1 flex justify-center">
@@ -2401,26 +2403,24 @@ export const LMSDashboard: React.FC = () => {
                         </div>
                         
                         <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap">
-                            <div className="flex bg-slate-100 dark:bg-gray-700 p-1.5 rounded-lg flex-wrap gap-1 sm:gap-0">
-                                <button 
-                                    onClick={() => setSelectedStudentGrade('all')}
-                                    className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${selectedStudentGrade === 'all' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-                                >
-                                    Tất cả
-                                </button>
-                                {[6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(grade => (
-                                    <button 
-                                        key={grade}
-                                        onClick={() => setSelectedStudentGrade(grade)}
-                                        className={`px-4 py-2 text-sm font-bold rounded-md transition-all ${selectedStudentGrade === grade ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-                                    >
-                                        {getGradeLabel(grade)}
-                                    </button>
-                                ))}
-                            </div>
+                            <select
+                                value={selectedStudentGrade}
+                                onChange={(e) => setSelectedStudentGrade(e.target.value)}
+                                className="px-4 py-2 text-sm font-bold rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-gray-700 text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 transition-colors cursor-pointer"
+                            >
+                                <option value="all">Tất cả</option>
+                                {CLASS_IDS.map(classId => {
+                                    const classData = classes.find(c => c.id === classId);
+                                    return (
+                                        <option key={classId} value={classData?.name?.replace('Lớp ', '') || ''}>
+                                            {classData?.name}
+                                        </option>
+                                    );
+                                })}
+                            </select>
                             <button
                                 onClick={handleExportStudentStatsExcel}
-                                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 transition-colors shadow-sm"
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 transition-colors shadow-sm whitespace-nowrap"
                                 title="Xuất file Excel"
                             >
                                 <DownloadIcon className="w-5 h-5" />
